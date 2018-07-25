@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Helpers;
 using Messages;
 using NServiceBus;
 using NServiceBus.Logging;
@@ -17,6 +18,8 @@ namespace ClientUI.Endpoints
             var endpointConfiguration = new EndpointConfiguration("ClientUI");
 
             var transport = endpointConfiguration.UseTransport<LearningTransport>();
+            var routing = transport.Routing();
+            routing.RouteToEndpoint(typeof(PlaceOrder), EndPointName.Sales);
             
             var endpointInstance = await Endpoint.Start(endpointConfiguration)
                 .ConfigureAwait(false);
@@ -48,7 +51,7 @@ namespace ClientUI.Endpoints
                         
                         // Send the command
                         log.Info($"Sending PlaceOrder command, OrderId = {command.OrderId}");
-                        await endpointInstance.SendLocal(command)
+                        await endpointInstance.Send(command)
                             .ConfigureAwait(false);
 
                         break;
