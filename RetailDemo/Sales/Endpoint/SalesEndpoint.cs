@@ -1,9 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
-using Helpers;
-using NServiceBus;
+﻿using Helpers;
 
-namespace Sales
+namespace Sales.Endpoint
 {
     class SalesEndpoint : Endpoint<SalesEndpoint>
     {
