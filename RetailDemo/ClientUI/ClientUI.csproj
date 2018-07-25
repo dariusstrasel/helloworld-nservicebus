@@ -10,4 +10,8 @@
       <PackageReference Include="NServiceBus" Version="7.0.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Messages" />
+    </ItemGroup>
+
 </Project>
