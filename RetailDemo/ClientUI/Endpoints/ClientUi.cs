@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using NServiceBus;
 
-namespace ClientUI
+namespace ClientUI.Endpoints
 {
-    class Program
+    class ClientUiEndpoint
     {
         static async Task Main()
         {
