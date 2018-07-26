@@ -18,7 +18,7 @@ namespace Billing.Handler
                 OrderId = message.OrderId
             };
 
-            return context.Publish(orderPlaced);
+            return Task.CompletedTask;
         }
     }
 }
