@@ -9,7 +9,11 @@ namespace Shipping
     {
         static async Task Main()
         {
-            var endpoint = new ShippingEndpoint(EndPointName.Shipping);
+            var endpoint = new ShippingEndpoint(EndPointName.Shipping)
+                .WithConfiguration()
+                .WithTransport()
+                .WithRouting()
+                .WithPersistence();
 
             await endpoint.Main();
         }

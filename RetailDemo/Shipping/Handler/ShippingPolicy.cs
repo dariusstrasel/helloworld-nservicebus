@@ -1,11 +1,12 @@
 using System.Threading.Tasks;
+using Messages.Commands;
 using Messages.Events;
 using NServiceBus;
 using NServiceBus.Logging;
 
 namespace Shipping.Handler
 {
-    public class ShippingPolicy : IHandleMessages<OrderPlaced>, IHandleMessages<OrderBilled>
+    public class ShippingPolicy : Saga<ShippingPolicyData>, IAmStartedByMessages<OrderPlaced>, IAmStartedByMessages<OrderBilled>
     {
         private static ILog log = LogManager.GetLogger<ShippingPolicy>();
 
@@ -13,15 +14,35 @@ namespace Shipping.Handler
         {
             log.Info($"Received OrderPlaced, OrderId = {message.OrderId}");
             
-            return Task.CompletedTask;
+            Data.IsOrderPlaced = true;
+            
+            return ProcessOrder(context);
         }
-
 
         public Task Handle(OrderBilled message, IMessageHandlerContext context)
         {
             log.Info($"Received OrderBilled, OrderId = {message.OrderId}");
             
-            return Task.CompletedTask;
+            Data.IsOrderBilled = true;
+            
+            return ProcessOrder(context);
+        }
+
+        protected override void ConfigureHowToFindSaga(SagaPropertyMapper<ShippingPolicyData> mapper)
+        {
+            mapper.ConfigureMapping<OrderPlaced>(message => message.OrderId)
+                .ToSaga(sagaData => sagaData.OrderId);
+            mapper.ConfigureMapping<OrderBilled>(message => message.OrderId)
+                .ToSaga(sagaData => sagaData.OrderId);
+        }
+
+        private async Task ProcessOrder(IMessageHandlerContext context)
+        {
+            if (Data.IsOrderPlaced && Data.IsOrderBilled)
+            {
+                await context.SendLocal(new ShipOrder() {OrderId = Data.OrderId});
+                MarkAsComplete();
+            }
         }
     }
 }
