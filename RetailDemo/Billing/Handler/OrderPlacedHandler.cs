@@ -13,7 +13,7 @@ namespace Billing.Handler
         {
             log.Info($"Received OrderPlaced, OrderId = {message.OrderId} - Charging credit card...");
 
-            return Task.CompletedTask;
+            return context.Publish(new OrderBilled() { OrderId = message.OrderId });
         }
     }
 }

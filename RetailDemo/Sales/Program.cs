@@ -8,7 +8,10 @@ namespace Sales
     {
         static async Task Main()
         {
-            var endpoint = new SalesEndpoint(EndPointName.Sales);
+            var endpoint = new SalesEndpoint(EndPointName.Sales)
+                .WithConfiguration()
+                .WithTransport()
+                .WithRouting();
 
             await endpoint.Main();
         }

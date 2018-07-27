@@ -9,7 +9,10 @@ namespace Billing
     {
         static async Task Main()
         {
-            var endpoint = new BillingEndpoint(EndPointName.Billing);
+            var endpoint = new BillingEndpoint(EndPointName.Billing)
+                .WithConfiguration()
+                .WithTransport()
+                .WithRouting();
 
             await endpoint.Main();
         }
